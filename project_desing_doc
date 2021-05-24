@@ -9,32 +9,32 @@ This a personal project of mine and below is the project design documention
 This section should contain a high level description of the purpose of the project and why we are building it.  Give the general context, scope of work and the business case. 
 After reading this section a non-technical reviewer should have a reasonable sense of what you are trying to build and a technical reviewer should already be thinking about 
 how they would tackle the design.
-  -	For this project we’re aiming to a build a basic replication of the AWS console but only for EC2 and S3 services with a basic authentication method using python3 and boto3. 
+  - For this project we’re aiming to a build a basic replication of the AWS console but only for EC2 and S3 services with a basic authentication method using python3 and boto3. 
     We will build a user-friendly CLI that lets users interact with AWS EC2 and S3 services such launching an EC2 instance or pulling a list of your S3 buckets but with far less 
     granularity when interacting with these services.
 
 
 --Requirements --
 Enumerate and discuss the requirements that are driving the design.  Include both Functional Requirements (system must do ...) and Non-functional Requirements (system shall be ...).
-  -	There will be user-friendly CLI for the user to interact with and from here, user should be able to pass arguments and parameters that should perform tasks like listing ec2 instances 
+  - There will be user-friendly CLI for the user to interact with and from here, user should be able to pass arguments and parameters that should perform tasks like listing ec2 instances 
     or s3 buckets, change instance state, or upload or delete buckets and objects.
-  -	First time user should create an account and returning users should be authenticated
-  -	With user-friendly CLI, users should be presented with options/arguments that lets them perform various S3 and EC2 actions
+  - First time user should create an account and returning users should be authenticated
+  - With user-friendly CLI, users should be presented with options/arguments that lets them perform various S3 and EC2 actions
   -	User will be authenticated with each action as it will be required for user pass in their username whenever they run the program and program will check whether user exists by querying dynamodb
 
 
 --System Interactions--
 Enumerate and discuss other systems that this system will use or interact with.  Differentiate between existing systems and to-be-built systems.
-  -	User friendly CLI will be created with the help of argparser module. 
-  -	User request which are passed as arguments will be handled with boto3 functions
-  -	These boto3 functions and code will talk directly to the AWS  service by utilizing its service API and creating a console session with the service(S3, EC2, etc.)
-  -	IF statements will be implemented that calls for the function based on arguments passed
-  -	User data will be stored to DyanomoDB by a boto3 function and email will be sent to new users with the help of lambda  and AWS SES
+  - User friendly CLI will be created with the help of argparser module. 
+  - User request which are passed as arguments will be handled with boto3 functions
+  - These boto3 functions and code will talk directly to the AWS  service by utilizing its service API and creating a console session with the service(S3, EC2, etc.)
+  - IF statements will be implemented that calls for the function based on arguments passed
+  - User data will be stored to DyanomoDB by a boto3 function and email will be sent to new users with the help of lambda  and AWS SES
 
 
 --Implementation Details-- 
 Details of the implementation.  Go as deep into the design as you need to to communicate with other programmers the important details of how the system is built.
-  -	Program Features
+  - Program Features
       o	User-friendly CLI
       o	Actions
           - Create new User
@@ -51,18 +51,18 @@ Details of the implementation.  Go as deep into the design as you need to to com
               •	List objects
               •	Delete objects
               
-  -	User-Friendly Command Line Interface 
+  - User-Friendly Command Line Interface 
       o	The argparse module will be used to build the CLI.
       o	User will be able to interact with the program by passing arguments to the python script
       o	The --help arguments can be passed which will provide detailed information of how to use the program
       o	Passed arguments will be used as parameters and passed to boto3 functions to handle user request
       
-  -	Creating new users
+  - Creating new users
       o	User can pass the --newuser argument and username to create new user
       o	From the passed username, the program will generate the email address for the user and store user’s data to a specified DynamoDB table
       o	With a new record being added to the DynamoDB table, a lambda functions should be triggered which will  extract new user’s email from the event and send new user a welcome email through AWS SNS
   
-  -	Launch, list and change the state of instances
+  - Launch, list and change the state of instances
       o	Program will provide two ways to launch instances
           - User can simply launch one or more free tire instances with predefined specifications  by passing the --create argument with the number of instances to launch
           - If user wants to provide specifications for the instances, instead of passing the number of instances to be launch to the --create argument, user can pass the name of the excel file to pull those specs from
@@ -73,7 +73,7 @@ Details of the implementation.  Go as deep into the design as you need to to com
           - To change the state of all existing instances, simply pass the --state argument with the state option (stop, start, or terminate)
           - To change the state of a specific instance, along with passing the --state argument with the state option, the -id argument with the id of the instance must also be passed
  
- -	Create, modify, and upload to S3 buckets
+ - Create, modify, and upload to S3 buckets
       o	For creating a bucket, the -cb argument will be passed with a name for the bucket
       o	To list existing buckets, pass the -lb argument
       o	To delete bucket, pass the --delbkt argument with the name of the bucket to delete

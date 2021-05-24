@@ -37,12 +37,12 @@ Details of the implementation.  Go as deep into the design as you need to to com
   -	Program Features
       o	User-friendly CLI
       o	Actions
-          	Create new User
-          	EC2
+          - Create new User
+          - EC2
               •	Launch EC2 instances
               •	List EC2 instances
               •	Change the state of instances (stop, start, terminate)
-          	S3
+          - S3
               •	Create buckets
               •	List buckets 
               •	Delete bucket
@@ -64,14 +64,14 @@ Details of the implementation.  Go as deep into the design as you need to to com
   
   -	Launch, list and change the state of instances
       o	Program will provide two ways to launch instances
-           User can simply launch one or more free tire instances with predefined specifications  by passing the --create argument with the number of instances to launch
-          	If user wants to provide specifications for the instances, instead of passing the number of instances to be launch to the --create argument, user can pass the name of the excel file to pull those specs from
+          - User can simply launch one or more free tire instances with predefined specifications  by passing the --create argument with the number of instances to launch
+          - If user wants to provide specifications for the instances, instead of passing the number of instances to be launch to the --create argument, user can pass the name of the excel file to pull those specs from
               •	With the use of the openpyxl module, the program should then extract data it needs from the excel file and use them as parameters to launch the instances
       o	User can pass the --list argument to list all the instances on the account and their state. 
-          	In addition to passing the --list argument, user can also pass the -id argument with the id of the instance to see more information about specific instance 
+          - In addition to passing the --list argument, user can also pass the -id argument with the id of the instance to see more information about specific instance 
       o	When changing instance state, user will the option to apply state change to all of their existing instances or to a specific instance
-          	To change the state of all existing instances, simply pass the --state argument with the state option (stop, start, or terminate)
-          	To change the state of a specific instance, along with passing the --state argument with the state option, the -id argument with the id of the instance must also be passed
+          - To change the state of all existing instances, simply pass the --state argument with the state option (stop, start, or terminate)
+          - To change the state of a specific instance, along with passing the --state argument with the state option, the -id argument with the id of the instance must also be passed
  
  -	Create, modify, and upload to S3 buckets
       o	For creating a bucket, the -cb argument will be passed with a name for the bucket

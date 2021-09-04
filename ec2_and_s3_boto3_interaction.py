@@ -31,18 +31,13 @@ def list_instances(instance_id):
         count = 0
         for each_instance in instances(list_instances)[0]:
             count += 1
-            print(
-                "{} Instance ID: {} | Instance Type: {} | Instance State: {}".format(count, each_instance['InstanceId'],
-                                                                                     each_instance['InstanceType'],
-                                                                                     each_instance['State']['Name']))
+            print("{} Instance ID: {} | Instance Type: {} | Instance State: {}".format(count, each_instance['InstanceId'], each_instance['InstanceType'], each_instance['State']['Name']))
 
 
 def create_instances(num_of_instances, image_id, instance_type):
     ec2_resource = boto3.resource('ec2')
     ec2_client = boto3.client('ec2')
-
     keypair_name = ec2_client.describe_key_pairs()['KeyPairs'][0]['KeyName']
-
     ec2_resource.create_instances(ImageId=image_id, InstanceType=instance_type, KeyName=keypair_name,
                                   MaxCount=num_of_instances, MinCount=1)
 
@@ -79,10 +74,8 @@ def create_instance_from_excel_sheet(excel_file_path):
         num_of_instances = sheet['b4'].value
         sg_id = sheet['b5'].value
         subnet_id = sheet['b6'].value
-
         ec2_resource = boto3.resource('ec2')
-        ec2_resource.create_instances(ImageId=ami_id, InstanceType=instance_type, SecurityGroupIds=[sg_id],
-                                      SubnetId=subnet_id, KeyName=keypair, MaxCount=num_of_instances, MinCount=1)
+        ec2_resource.create_instances(ImageId=ami_id, InstanceType=instance_type, SecurityGroupIds=[sg_id], SubnetId=subnet_id, KeyName=keypair, MaxCount=num_of_instances, MinCount=1)
     except xl.utils.exceptions.InvalidFileException as e:
         print(e)
     except botocore.exceptions.ParamValidationError as e:
@@ -118,7 +111,6 @@ def list_buckets():
     buckets = []
     for every_bucket in my_buckets:
         buckets.append(every_bucket)
-
     return buckets
 
 
@@ -127,8 +119,7 @@ def delete_objects(bucket_name, object_name):
         s3_client = boto3.client('s3')
         s3_client.delete_object(
             Bucket=bucket_name,
-            Key=object_name
-        )
+            Key=object_name)
     except boto3.exceptions as e:
         print(e)
 
@@ -164,12 +155,9 @@ def log_user_actions(action, log_file_path):
     my_bucket_names = []
     for bucket in list_buckets():
         my_bucket_names.append(bucket['Name'])
-
     if 'ec2-s3-awsconsoleboto3' not in my_bucket_names:
         create_s3_bucket('ec2-s3-awsconsoleboto3')
-
     logging.info(action)
-
     upload_object('ec2-s3-awsconsoleboto3-logs', log_file_path)
 
 
@@ -226,7 +214,6 @@ if __name__ == "__main__":
                 {'Name': 'instance-state-name', 'Values': ['pending', 'stopped', 'running', 'stopping']}]
             list_instances = ec2_client.describe_instances(Filters=instance_state_filter)
             my_instance_ids = instances(list_instances)[1]
-
             change_instance_state(my_instance_ids, args.state)
         log_user_actions('change instance state', log_file)
     elif args.cb:

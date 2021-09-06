@@ -1,7 +1,5 @@
 import argparse
 from pprint import pprint
-from sys import path
-import openpyxl as xl
 import os
 import logging
 import boto3
@@ -34,11 +32,11 @@ def list_instances(instance_id):
             print("{} Instance ID: {} | Instance Type: {} | Instance State: {}".format(count, each_instance['InstanceId'], each_instance['InstanceType'], each_instance['State']['Name']))
 
 
-def create_instances(num_of_instances, image_id, instance_type):
+def create_instances(num_of_instances, image_id):
     ec2_resource = boto3.resource('ec2')
     ec2_client = boto3.client('ec2')
     keypair_name = ec2_client.describe_key_pairs()['KeyPairs'][0]['KeyName']
-    ec2_resource.create_instances(ImageId=image_id, InstanceType=instance_type, KeyName=keypair_name,
+    ec2_resource.create_instances(ImageId=image_id, InstanceType='t2.micro', KeyName=keypair_name,
                                   MaxCount=num_of_instances, MinCount=1)
 
 
@@ -64,20 +62,16 @@ def change_instance_state(instance_id, instance_state):
         print(e)
 
 
-def create_instance_from_excel_sheet(excel_file_path):
+def create_custom_instance():
+    instance_type = input("Instance type: ")
+    ami_id = input("AMI ID: ")
+    subnet_id = input("Subnet ID: ")
+    sg_id = input("Security group ID: ")
+    num_of_instances = int(input("How many instances to launch? "))
+    keypair = input("Key pair: ")
+    ec2_resource = boto3.resource('ec2')
     try:
-        excel_file = xl.load_workbook(excel_file_path)
-        sheet = excel_file['Sheet1']
-        instance_type = sheet['b1'].value
-        ami_id = sheet['b2'].value
-        keypair = sheet['b3'].value
-        num_of_instances = sheet['b4'].value
-        sg_id = sheet['b5'].value
-        subnet_id = sheet['b6'].value
-        ec2_resource = boto3.resource('ec2')
         ec2_resource.create_instances(ImageId=ami_id, InstanceType=instance_type, SecurityGroupIds=[sg_id], SubnetId=subnet_id, KeyName=keypair, MaxCount=num_of_instances, MinCount=1)
-    except xl.utils.exceptions.InvalidFileException as e:
-        print(e)
     except botocore.exceptions.ParamValidationError as e:
         print(e)
     except botocore.exceptions.ClientError as e:
@@ -181,12 +175,10 @@ if __name__ == "__main__":
     ec2_group = parser.add_argument_group('EC2 arguments')
     s3_group = parser.add_argument_group('S3 arguments')
 
-    ec2_group.add_argument("-c", "--create", help="Launch instance, pass the number of instances to launch or excel file, optionally pass desired AMI ID", metavar='')
-    ec2_group.add_argument("-l", "--list", action="store_true", help="List instances, optionally pass instance ID to get more information on a specific instance")
-    ec2_group.add_argument("--type", help="Pass instance type", metavar='', default='t2.micro')
-    ec2_group.add_argument("--ami", help="Pass AMI ID", metavar='', default=image_id)
+    ec2_group.add_argument("-c", "--create", help="Launch instance, pass the number of instances to launch or pass 'custom' to customise instance", metavar='')
+    ec2_group.add_argument("-l", "--list", action="store_true", help="List instances, pass instance ID for more information on an instance")
     ec2_group.add_argument("-s", "--state", help="Change state of all instances unless instance ID is passed, pass state to chage to (stop, start, or terminate)", choices=['terminate', 'stop', 'run'], metavar='')
-    ec2_group.add_argument("-id", help="Pass instance ID or AMI ID", metavar='')
+    ec2_group.add_argument("-id", help="Pass instance ID", metavar='')
     s3_group.add_argument('-cb', help="Create bucket, pass bucket name", metavar='B')
     s3_group.add_argument('-lb', help="List buckets", action="store_true")
     s3_group.add_argument('-lo', help="List objects/files in a particular bucket, must pass bucket name", metavar='')
@@ -201,9 +193,9 @@ if __name__ == "__main__":
         log_user_actions('list instance', log_file)
     elif args.create:
         if args.create.isdigit():
-            create_instances(int(args.create), args.ami, args.type)
+            create_instances(int(args.create), image_id)
         else:
-            create_instance_from_excel_sheet(args.create)
+            create_custom_instance()
         log_user_actions('launch instance', log_file)
     elif args.state:
         if args.id:

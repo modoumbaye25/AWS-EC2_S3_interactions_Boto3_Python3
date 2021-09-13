@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import argparse
 from pprint import pprint
 import os
@@ -122,9 +124,8 @@ def delete_bucket(bucket_name):
     try:
         s3_client = boto3.client('s3')
         s3_client.delete_bucket(Bucket=bucket_name)
-    except boto3.exceptions as e:
+    except s3_client.exceptions.ClientError as e:
         print(e)
-
 
 def download_object(bucket_name, object_name, destination_folder):
     try:
@@ -137,12 +138,15 @@ def download_object(bucket_name, object_name, destination_folder):
 
 
 def list_objects(bucket_name):
+    s3_client = boto3.client('s3')
     try:
-        s3_client = boto3.client('s3')
         my_objects = s3_client.list_objects(Bucket=bucket_name)
-        return my_objects['Contents']
-    except boto3.exceptions as e:
+    except s3_client.exceptions.NoSuchBucket as e:
         print(e)
+    else:
+        if "Contents" in my_objects:
+            for obj in my_objects['Contents']:
+                print('{} | Size: {} KB | Last Modified: {}'.format(obj['Key'], obj['Size'], obj['LastModified']))
 
 
 def log_user_actions(action, log_file_path):
@@ -179,7 +183,7 @@ if __name__ == "__main__":
     ec2_group.add_argument("-l", "--list", action="store_true", help="List instances, pass instance ID for more information on an instance")
     ec2_group.add_argument("-s", "--state", help="Change state of all instances unless instance ID is passed, pass state to chage to (stop, start, or terminate)", choices=['terminate', 'stop', 'run'], metavar='')
     ec2_group.add_argument("-id", help="Pass instance ID", metavar='')
-    s3_group.add_argument('-cb', help="Create bucket, pass bucket name", metavar='B')
+    s3_group.add_argument('-cb', help="Create bucket, pass bucket name", metavar='')
     s3_group.add_argument('-lb', help="List buckets", action="store_true")
     s3_group.add_argument('-lo', help="List objects/files in a particular bucket, must pass bucket name", metavar='')
     s3_group.add_argument("--upload", nargs='+', help="Upload file to specified bucket, pass bucket name and file path", metavar='')
@@ -217,8 +221,6 @@ if __name__ == "__main__":
         log_user_actions('list bucket', log_file)
     elif args.lo:
         objs = list_objects(args.lo)
-        for obj in objs:
-            print('{} | Size: {} KB | Last Modified: {}'.format(obj['Key'], obj['Size'], obj['LastModified']))
         log_user_actions('list object', log_file)
     elif args.upload:
         upload_object(args.upload[0], args.upload[1])
@@ -232,4 +234,5 @@ if __name__ == "__main__":
     elif args.delbkt:
         delete_bucket(args.delbkt)
         log_user_actions('delete bucket', log_file)
+
 

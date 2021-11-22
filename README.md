@@ -3,7 +3,7 @@ Program that lets you interact with EC2 and S3 using Boto3 through a user-friend
 
 This a personal project of mine and below is the project design documentation
 
---------------------------------------------------------------------Project Design Documentation------------------------------------------------------------------------------
+--------------------------------------------Project Design Documentation--------------------------------------------
 
 --Introduction--
   - For this project I am aiming to a build a basic replication of the AWS console but only for EC2 and S3 services using python3 and boto3.
@@ -15,6 +15,7 @@ This a personal project of mine and below is the project design documentation
   - There will be user-friendly CLI for the user to interact with and from here, user should be able to pass arguments and values that should perform tasks like 
     listing ec2 instances or s3 buckets, change instance state, or upload or delete buckets and objects.
   - With a user-friendly CLI, users should be presented with options/arguments that lets them perform various S3 and EC2 actions
+  - There will be a user action tracking systems that logs user actions and uploads it to S3
 
 
 --System Interactions--

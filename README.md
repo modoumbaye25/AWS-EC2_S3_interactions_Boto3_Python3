@@ -27,20 +27,20 @@ This a personal project of mine and below is the project design documentation
 
 --Implementation Details-- 
   - Program Features
-      o	User-friendly CLI
-      o	Actions
-          - EC2
-              •	Launch EC2 instances
-              •	List EC2 instances
-              •	Change the state of instances (stop, start, terminate)
-          - S3
-              •	Create buckets
-              •	List buckets 
-              •	Delete bucket
-              •	Upload objects
-              •	Download objects
-              •	List objects
-              •	Delete objects
+  -   User-friendly CLI
+  -     Actions that can be performed
+  -       EC2
+  -         Launch EC2 instances
+  -         List EC2 instances
+  -         Change the state of instances (stop, start, terminate)
+  -       S3
+  -         Create buckets
+  -         List buckets 
+  -         Delete bucket
+  -         Upload objects
+  -         Download objects
+  -         List objects
+  -         Delete objects
               
   - User-Friendly Command Line Interface 
       o	The argparse module will be used to build the CLI.

@@ -12,58 +12,15 @@ This a personal project of mine and below is the project design documentation
 
 
 --Requirements --
-  - There will be user-friendly CLI for the user to interact with and from here, user should be able to pass arguments and values that should perform tasks like 
-    listing ec2 instances or s3 buckets, change instance state, or upload or delete buckets and objects.
-  - With a user-friendly CLI, users should be presented with options/arguments that lets them perform various S3 and EC2 actions
-  - There will be a user action tracking systems that logs user actions and uploads it to S3
+  - There will be user-friendly CLI for the user to interact with and from here, user should be able to pass arguments and values that should perform tasks like listing ec2 instances or s3 buckets, change instance state, or upload or delete buckets and objects.  Users, however, will have to first pass their username before being allowed to take any actions. User actions will also be logged to an S3 bucket
 
 
 --System Interactions--
   - User friendly CLI will be created with the help of argparser module. 
   - User requests which are passed as arguments will be handled with boto3 functions
   - These boto3 functions and code will talk directly to the AWS service by utilizing its service API and creating a console session with the service(S3, EC2, etc.)
-  - IF statements will be implemented that will invoke functions based on arguments passed 
-
-
---Implementation Details-- 
-  - Program Features
-  -   User-friendly CLI
-  -     Actions that can be performed
-  -       EC2
-  -         Launch EC2 instances
-  -         List EC2 instances
-  -         Change the state of instances (stop, start, terminate)
-  -       S3
-  -         Create buckets
-  -         List buckets 
-  -         Delete bucket
-  -         Upload objects
-  -         Download objects
-  -         List objects
-  -         Delete objects
-              
-  - User-Friendly Command Line Interface 
-      o	The argparse module will be used to build the CLI.
-      o	User will be able to interact with the program by passing arguments to the python script
-      o	The --help arguments can be passed which will provide detailed information of how to use the program
-      o	Passed arguments will be parsed then passed to boto3 functions to handle user request
-  
-  - Launch, list and change the state of instances
-      o	Program will provide two ways to launch instances
-          - User can simply launch one or more free tire instances with predefined specifications  by passing the --create argument with the number of instances to launch
-          - If user wants to provide specifications for the instances, instead of passing the number of instances to be launch to the --create argument, user can instead pass 
-          the word "custom" to the --create argument. User will be taken through a series of prompts where they can enter some specifications for the instance
-      o	User can pass the --list argument to list all the instances on the account and their state. 
-          - In addition to passing the --list argument, user can also pass the -id argument with the id of the instance to see more information about specific instance 
-      o	When changing instance state, user will the option to apply state change to all of their existing instances or to a specific instance
-          - To change the state of all existing instances, simply pass the --state argument with the state option (stop, start, or terminate)
-          - To change the state of a specific instance, along with passing the --state argument with the state option, the -id argument with the id of the instance must also be passed
+  - IF statements will be implemented that will invoke functions based on arguments passed
+  - Users will be created and stored in a DynamoDB table
+  - User actions will be logged through the use of the logging module. File to store the logs will be created upon running the script and then uploaded to S3
  
- - Create, modify, and upload to S3 buckets
-      o	For creating a bucket, the -cb argument will be passed with a name for the bucket
-      o	To list existing buckets, pass the -lb argument
-      o	To delete bucket, pass the --delbkt argument with the name of the bucket to delete
-      o	To list objects in a buckets, pass the -lo argument with the name of the bucket
-      o	To upload file/object to a bucket, pass the --upload argument with the file path and the bucket name
-      o	To download file/object from a bucket, pass the --download argument with the file name and the bucket name, and the path for the file to be stored
-      o	To delete an object/file for a bucket, pass the --delobj arguments with the file name and the bucket name.
+ Full design doc - https://docs.google.com/document/d/1BzujbQoAxJ250XQqIZ0QFLyTDHzb61wCTn9MLx82VxE/edit?usp=sharing
